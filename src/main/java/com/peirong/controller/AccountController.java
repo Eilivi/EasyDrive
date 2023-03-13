@@ -43,6 +43,8 @@ public class AccountController {
         }
 
 
+
+
         if (result.getPassword().equals(account.getPassword()) && auth.equalsIgnoreCase(authentic)) {
         request.getSession().removeAttribute("captcha");
             return result.getUsername();
