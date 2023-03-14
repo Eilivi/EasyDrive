@@ -10,3 +10,30 @@ spring:
     username: root
     password: Re4030dd.
     type: com.alibaba.druid.pool.DruidDataSource
+
+  mail:
+    default-encoding: utf-8
+    # 配置 SMTP 服务器地址
+    host: smtp.gmail.com
+    #发送方邮件名
+    username: ieep.roon@gmail.com
+    #授权码
+    password: rlzfyleueqmdhszv
+
+    protocol: smtps
+
+
+    #端口号465或587
+    port: 465
+
+    #其他参数
+    properties:
+      mail:
+        #配置SSL 加密工厂
+        smtp:
+          ssl:
+            #本地测试，先放开ssl
+            enable: true
+            required: false
+          #开启debug模式，这样邮件发送过程的日志会在控制台打印出来，方便排查错误
+        debug: true
