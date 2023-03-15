@@ -26,8 +26,6 @@ public class SendMailServiceImpl implements SendMailService {
     @Value("${spring.mail.username}")
     private String sendMailer;
 
-    //private static final Logger logger = LoggerFactory.getLogger(SendMailServiceImpl.class);
-
     public void checkMail(Email mailRequest) {
         Assert.notNull(mailRequest,"邮件请求不能为空");
         Assert.notNull(mailRequest.getSendTo(), "邮件收件人不能为空");
@@ -51,10 +49,7 @@ public class SendMailServiceImpl implements SendMailService {
         message.setSentDate(new Date());
 
         javaMailSender.send(message);
-        //logger.info("发送邮件成功:{}->{}",sendMailer,mailRequest.getSendTo());
     }
-
-
 
     @Override
     public void sendHtmlMail(Email mailRequest) {
@@ -80,9 +75,7 @@ public class SendMailServiceImpl implements SendMailService {
                 helper.addAttachment(fileName,file);
             }
             javaMailSender.send(message);
-//            logger.info("发送邮件成功:{}->{}",sendMailer,mailRequest.getSendTo());
         } catch (MessagingException e) {
-//            logger.error("发送邮件时发生异常！",e);
         }
     }
 }

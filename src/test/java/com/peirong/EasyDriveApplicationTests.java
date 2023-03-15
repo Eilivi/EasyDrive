@@ -26,9 +26,10 @@ class EasyDriveApplicationTests {
     @Test
     void contextLoads() {
         Email mailRequest = new Email();
-        mailRequest.setSendTo("lyu.yulian.li@gmail.com");
+        mailRequest.setSendTo("201910311201@stu.shmtu.edu.cn");
         mailRequest.setText("\uD83D\uDE18");
-        mailRequest.setSubject("siki");
+
+        mailRequest.setSubject("test");
         SimpleMailMessage message = new SimpleMailMessage();
         checkMail(mailRequest);
         //邮件发件人
@@ -42,8 +43,7 @@ class EasyDriveApplicationTests {
         //邮件发送时间
         message.setSentDate(new Date());
 
-        //javaMailSender.send(message);
-        //logger.info("发送邮件成功:{}->{}",sendMailer,mailRequest.getSendTo());
+        javaMailSender.send(message);
     }
 
 }

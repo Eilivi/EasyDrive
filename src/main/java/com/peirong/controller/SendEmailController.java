@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/send-mail")
-//@Api(value = "发送邮件接口",tags = {"发送邮件接口"})
 public class SendEmailController {
     @Autowired
     private SendMailService sendMailService;
@@ -21,6 +20,7 @@ public class SendEmailController {
     }
 
     @PostMapping("/html")
-    public void SendHtmlMessage(@RequestBody Email mailRequest) { sendMailService.sendHtmlMail(mailRequest);}
+    public void SendHtmlMessage(@RequestBody Email mailRequest) {
+        sendMailService.sendHtmlMail(mailRequest);}
 }
 

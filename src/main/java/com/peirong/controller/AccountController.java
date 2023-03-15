@@ -29,9 +29,7 @@ public class AccountController {
     public String login(@RequestBody Account account, String authentic, HttpServletRequest request){
         String auth = (String) request.getSession().getAttribute("captcha");
         LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
-
         queryWrapper.eq(Account::getPhone, account.getUsername()).or().eq(Account::getEmail, account.getUsername());
-
         Account result = accountService.getOne(queryWrapper);
 
         if (result == null) {
@@ -42,14 +40,11 @@ public class AccountController {
             return "-2";
         }
 
-
-
-
         if (result.getPassword().equals(account.getPassword()) && auth.equalsIgnoreCase(authentic)) {
-        request.getSession().removeAttribute("captcha");
+            request.getSession().removeAttribute("captcha");
+
             return result.getUsername();
         }
-
         return "-1";
     }
 
@@ -64,7 +59,7 @@ public class AccountController {
         } catch (IOException e) {
             session.removeAttribute("captcha");
         }
-        //System.out.println(captchastring);
+        System.out.println(captchastring);
         return "success";
     }
 }

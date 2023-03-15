@@ -7,8 +7,8 @@ import lombok.Data;
 
 public class Account {
     private Long id;
-    private String password;
     private String username;
-    private String phone;
+    private String password;
     private String email;
+    private String phone;
 }
