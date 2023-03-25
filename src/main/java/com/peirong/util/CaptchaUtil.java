@@ -12,73 +12,27 @@ import java.util.Random;
  * 验证码工具类
  */
 public class CaptchaUtil {
-
-
-    /**
-     * 图片的宽度
-     */
     private int width = 300;
-
-    /**
-     * 图片的高度
-     */
     private int height = 40;
-
-    /**
-     * 验证码字符个数
-     */
     private int codeCount = 4;
-
-    /**
-     * 验证码干扰线数
-     */
     private int lineCount = 100;
-
-    /**
-     * 验证码
-     */
     private String code = null;
-
-    /**
-     * 验证码图片Buffer
-     */
     private BufferedImage buffImg = null;
-
-    /**
-     * 验证码范围
-     */
     private char[] codeSequence = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q',
             'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
             'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
             '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
-    /**
-     * 默认构造函数,设置默认参数
-     */
     public CaptchaUtil() {
         this.createCode();
     }
 
-    /**
-     * 构造函数
-     *
-     * @param width 图片宽
-     * @param height 图片高
-     */
     public CaptchaUtil(int width, int height) {
         this.width = width;
         this.height = height;
         this.createCode();
     }
 
-    /**
-     * 构造函数
-     *
-     * @param width 图片宽
-     * @param height 图片高
-     * @param codeCount 字符个数
-     * @param lineCount 干扰线条数
-     */
     public CaptchaUtil(int width, int height, int codeCount, int lineCount) {
         this.width = width;
         this.height = height;
@@ -87,17 +41,9 @@ public class CaptchaUtil {
         this.createCode();
     }
 
-    /**
-     *
-     * @方法名：createCode
-     * @方法描述:生成验证码
-
-     */
     public void createCode() {
         int x = 0, fontHeight = 0, codeY = 0;
         int red = 0, green = 0, blue = 0;
-
-
 
         x = width / (codeCount + 1);// 每个字符的宽度(左右各空出一个字符)
         fontHeight = height - 2;// 字体的高度
@@ -152,10 +98,8 @@ public class CaptchaUtil {
     }
 
     /**
-     *
      * @方法名：write
      * @方法描述:将验证码图片写入指定路径
-
      */
     public void write(String path) throws IOException {
         OutputStream sos = new FileOutputStream(path);
@@ -163,7 +107,6 @@ public class CaptchaUtil {
     }
 
     /**
-     *
      * @方法名：write
      * @方法描述:将验证码图片写入指定输出流
      */
@@ -173,7 +116,6 @@ public class CaptchaUtil {
     }
 
     /**
-     *
      * @方法名：getBuffImg
      * @方法描述:获取验证码图片
      */
@@ -189,6 +131,5 @@ public class CaptchaUtil {
     public String getCode() {
         return code;
     }
-
 
 }

@@ -51,15 +51,42 @@ public class AccountController {
     @GetMapping("/getAuthentic")
     public String getAuthentic(HttpServletRequest request, HttpServletResponse response) {
         CaptchaUtil c = new CaptchaUtil(130, 40);
-        String captchastring = c.getCode();
+        String captchastr = c.getCode();
         HttpSession session = request.getSession();
-        session.setAttribute("captcha", captchastring);
+        session.setAttribute("captcha", captchastr);
         try {
             c.write(response.getOutputStream());
         } catch (IOException e) {
             session.removeAttribute("captcha");
         }
-        System.out.println(captchastring);
+        System.out.println(captchastr);
         return "success";
+    }
+
+
+    @PostMapping("/register")
+    public String register(@RequestBody Account account,String verify,HttpServletRequest request) {
+        String captcha = (String) request.getSession().getAttribute("captcha");
+        if (verify.equals(captcha)) {
+            return accountService.save(account) ? "0" : "-1";
+        }
+        return "-1";
+    }
+
+    @GetMapping("/check")
+    public String check(String phoneOrEmail, String type) {
+        Account result;
+        if (type.equals("phone")) {
+            LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Account::getPhone, phoneOrEmail);
+            result = accountService.getOne(queryWrapper);
+        } else {
+            LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Account::getEmail, phoneOrEmail);
+            result = accountService.getOne(queryWrapper);
+        }
+        if (result != null)
+            return "-1";
+        else return "0";
     }
 }

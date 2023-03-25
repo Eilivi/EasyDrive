@@ -27,9 +27,8 @@ class EasyDriveApplicationTests {
     void contextLoads() {
         Email mailRequest = new Email();
         mailRequest.setSendTo("201910311201@stu.shmtu.edu.cn");
-        mailRequest.setText("\uD83D\uDE18");
-
-        mailRequest.setSubject("test");
+        mailRequest.setText("您的验证码为：120606");
+        mailRequest.setSubject("账户安全代码");
         SimpleMailMessage message = new SimpleMailMessage();
         checkMail(mailRequest);
         //邮件发件人

@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 @Data
 public class Email implements Serializable {
-
     private String sendTo;
     private String subject;
     private String text;

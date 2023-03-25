@@ -21,6 +21,18 @@ public class SendEmailController {
 
     @PostMapping("/html")
     public void SendHtmlMessage(@RequestBody Email mailRequest) {
-        sendMailService.sendHtmlMail(mailRequest);}
+        sendMailService.sendHtmlMail(mailRequest);
+    }
+
+    @PostMapping("/send-email")
+    public String send(@RequestBody Email email) {
+
+        //String code =
+
+        return "0";
+    }
 }
+
+
+
 
