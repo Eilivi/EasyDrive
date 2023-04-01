@@ -7,10 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
-
-/**
- * 验证码工具类
- */
 public class CaptchaUtil {
     private int width = 300;
     private int height = 40;

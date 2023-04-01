@@ -7,7 +7,6 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(EasyDriveApplication.class);
+        return application.sources(App.class);
     }
-
 }
