@@ -1,12 +1,17 @@
 package com.peirong.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @author Peirong
+ */
 @Data
 @TableName("users")
 public class User {
+    @TableId(type = IdType.AUTO)
     private Long id;
     private String username;
     private String phone;

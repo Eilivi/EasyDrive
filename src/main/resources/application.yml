@@ -8,10 +8,6 @@ server:
     uri-encoding: UTF-8
     threads:
       max: 500
-#  ssl:
-#    key-store: sang.p12
-#    key-alias: tomcathttps
-#    key-store-password: Re4030dd.
 
 spring:
   datasource:

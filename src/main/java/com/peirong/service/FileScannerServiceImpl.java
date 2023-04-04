@@ -1,6 +1,5 @@
 package com.peirong.service;
 
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -8,8 +7,10 @@ import java.util.List;
 
 
 
+/**
+ * @author Peirong
+ */
 public class FileScannerServiceImpl implements FileScannerService {
-
 
     public List<File> findSimilarFiles(MultipartFile uploadedFile) {
         // TODO: 实现查找相似文件的逻辑，返回重复或相似文件的列表
