@@ -36,7 +36,6 @@ spring:
       min-idle: 10
       max-active: 20
 
-
   mail:
     default-encoding: utf-8
     # 配置 SMTP 服务器地址
