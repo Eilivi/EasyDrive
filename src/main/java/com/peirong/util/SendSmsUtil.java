@@ -1,5 +1,7 @@
 package com.peirong.util;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Random;
@@ -8,13 +10,18 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
+/**
+ * @author Peirong
+ */
+@Component
 public class SendSmsUtil {
     private final static String CHARSET = "UTF-8";
-    private final static String SECRET_ID = System.getenv("SECRET_ID");
-    private final static String SECRET_KEY = System.getenv("SECRET_KEY");
+    @Value("${SECRET_ID}")
+    private String SECRET_ID;
+    @Value("${SECRET_KEY}")
+    private String SECRET_KEY;
 
-
-    public static String sign(String s, String key, String method) throws Exception {
+    public String sign(String s, String key, String method) throws Exception {
         Mac mac = Mac.getInstance(method);
         SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(CHARSET), mac.getAlgorithm());
         mac.init(secretKeySpec);
@@ -22,7 +29,7 @@ public class SendSmsUtil {
         return DatatypeConverter.printBase64Binary(hash);
     }
 
-    public static String getStringToSign(TreeMap<String, Object> params) {
+    public String getStringToSign(TreeMap<String, Object> params) {
         StringBuilder s2s = new StringBuilder("GETsms.tencentcloudapi.com/?");
         // 签名时要求对参数进行字典排序，此处用TreeMap保证顺序
         for (String k : params.keySet()) {
@@ -31,7 +38,7 @@ public class SendSmsUtil {
         return s2s.toString().substring(0, s2s.length() - 1);
     }
 
-    public static String getUrl(TreeMap<String, Object> params) throws UnsupportedEncodingException {
+    public String getUrl(TreeMap<String, Object> params) throws UnsupportedEncodingException {
         StringBuilder url = new StringBuilder("https://sms.tencentcloudapi.com/?");
         for (String k : params.keySet()) {
             url.append(k).append("=").append(URLEncoder.encode(params.get(k).toString(), CHARSET)).append("&");
@@ -39,9 +46,8 @@ public class SendSmsUtil {
         return url.toString().substring(0, url.length() - 1);
     }
 
-    public static String postURL(String phone, String code) throws Exception {
+    public String postURL(String phone, String code) throws Exception {
         TreeMap<String, Object> params = new TreeMap<String, Object>();
-        // 实际调用时应当使用随机数，例如：params.put("Nonce", new Random().nextInt(java.lang.Integer.MAX_VALUE));
         params.put("Nonce", new Random().nextInt(10000));
         params.put("Timestamp", System.currentTimeMillis() / 1000);
         params.put("SecretId", SECRET_ID);

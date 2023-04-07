@@ -5,12 +5,19 @@ server:
     session:
       timeout: 30m
 
+SECRET_ID: ENC(9za+55jYIHU8XybJiNjZfFa37AQFdKeqgvNXZftDKCbnUdV4boCpZZosDKFvLUmeCGUG3Y/Zx4CpaHJJD5GDV1qMqj0Bgs3uWQTP/1yX2nQ=)
+SECRET_KEY: ENC(DguxSBSApI0j2g8bjZbLDmC3P81nTaWKq/NPts2u1CV5oe1+eh9MklFMgOsnkIa8LodRpp1sUFFxCEGf9GRLy4WzaH3AVNqPTaD2JP6Tizo=)
+
+jasypt:
+  encryptor:
+    password: REDLXIRGRETFD
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://peirong.co/EasyDrive
-    username: root
+    url: ENC(TgRx0lmbQV7m4ENNVeoxeeIOKx15nm+g/+b7etJf2X2+0L8tDxZVb7RVl8peN7GoC+fDpOUBcfO3gpDN6RiLXHmZkw7ngh2dno/TGaAcFWs=)
+    username: ENC(zxSs3EnpKDoSj3nhqqf+j8mCgnD4tiUheaCPea8vyuRqQyUeM3tyiNkXk0ATz66a)
     password: T34X7i/AESfBBbvyrpRTCJFTY7gkpWqfKaPckRPySx80rg5nEZ7SIJgmM1EgXrzzv1UE5UUaytumgGkUZkpzkA==
     druid:
       public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJwC0siV5KntGBea3I7m0D5yTChgOn8GI+QB+2dcM2OShu9gB/rtw7vZ3J3ENvVKB35x/ILzR/UoY0ETDrEexPcCAwEAAQ==
@@ -35,9 +42,9 @@ spring:
     # 配置 SMTP 服务器地址
     host: smtp.gmail.com
     #发送方邮件名
-    username: ieep.roon@gmail.com
+    username: ENC(GfuerfntNoKS4DbmO5nyECEImuLKbJFAJw41yLVWHsySI0FfYKWqTeynpHjJ05vOqnuUuD2gISd9EVZqYmaNIg==)
     #授权码
-    password: rlzfyleueqmdhszv
+    password: ENC(oK5DmXKZZ6vj700d/c40MTtFwtoOcj1jFAzAhrg+CbgYH1/Y5kRnHhkKcaaaK1d14wFMTAMuNiv+wgyFYtTKAg==)
     protocol: smtps
     #端口号465或587
     port: 465

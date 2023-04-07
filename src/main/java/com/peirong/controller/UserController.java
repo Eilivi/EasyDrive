@@ -28,7 +28,8 @@ public class UserController {
     UserService userService;
     @Resource
     SendEmailUtil sendEmailUtil;
-
+    @Resource
+    SendSmsUtil sendSmsUtil;
     @Resource
     private ExecutorService executorService;
 
@@ -105,7 +106,7 @@ public class UserController {
         int vode = ValidateCode.generateValidateCode(6);
         String code = String.valueOf(vode);
         OkHttpClient client = new OkHttpClient();
-        Request postRequest = new Request.Builder().url(SendSmsUtil.postURL(account, code)).get().build();
+        Request postRequest = new Request.Builder().url(sendSmsUtil.postURL(account, code)).get().build();
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(300);
 

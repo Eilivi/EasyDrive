@@ -19,10 +19,12 @@ target/
 *.iml
 *.ipr
 
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
 /dist/
+/application.yml
 /nbdist/
 /.nb-gradle/
 build/
