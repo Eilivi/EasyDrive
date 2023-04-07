@@ -18,5 +18,8 @@ public class ConfigToolsTest {
         System.out.println("publicKey:" + arr[1]);
         System.out.println("password:" + encrypt(arr[0], password));
 
+        System.out.println(System.getenv("SECRET_ID"));
+        System.out.println(System.getenv("SECRET_KEY"));
+
     }
 }

@@ -10,8 +10,9 @@ import javax.xml.bind.DatatypeConverter;
 
 public class SendSmsUtil {
     private final static String CHARSET = "UTF-8";
-    private final static String SECRET_ID = "AKIDLWSAYhaCk4MfqseBRSDtNCl4A7obCZpq";
-    private final static String SECRET_KEY = "rRnwtjOoxrLZYGq88qJWUCfbHhs53pOk";
+    private final static String SECRET_ID = System.getenv("SECRET_ID");
+    private final static String SECRET_KEY = System.getenv("SECRET_KEY");
+
 
     public static String sign(String s, String key, String method) throws Exception {
         Mac mac = Mac.getInstance(method);
