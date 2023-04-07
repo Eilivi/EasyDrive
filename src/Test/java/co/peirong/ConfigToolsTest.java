@@ -21,10 +21,7 @@ public class ConfigToolsTest {
 
     @Test
     public void testPassword() throws Exception {
-
-
         System.out.println(username);
-
 
     }
 }

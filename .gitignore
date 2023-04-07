@@ -33,3 +33,4 @@ build/
 ### VS Code ###
 .vscode/
 /EasyDrive/src/main/resources/application.yml
+/EasyDrive/src/Test/
