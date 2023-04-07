@@ -5,12 +5,12 @@ server:
     session:
       timeout: 30m
 
-SECRET_ID: ENC(LX+Dp8PemWOocmh63ZwpRi1zHipZzwTGIk1mzzGXWRGywDlA+6RRvBHuHyqZvzhzVcNOr6jPGKZy1SNoQRSwukBiNjoHGvBBQh1B073w0lU=)
-SECRET_KEY: ENC(XOofR17e0jwbkvG6NUq8opazCBSg01OHjYZyD1RhpuEBpWAj5qm5dJzCKC2dWxXOo4rZGpIEIAF9hgIK6hTw5ztBfRhENZRQZbb91mXNUzQ=)
-
 jasypt:
   encryptor:
     password: REDLXIRGRETFD
+
+SECRET_ID: ENC(LX+Dp8PemWOocmh63ZwpRi1zHipZzwTGIk1mzzGXWRGywDlA+6RRvBHuHyqZvzhzVcNOr6jPGKZy1SNoQRSwukBiNjoHGvBBQh1B073w0lU=)
+SECRET_KEY: ENC(XOofR17e0jwbkvG6NUq8opazCBSg01OHjYZyD1RhpuEBpWAj5qm5dJzCKC2dWxXOo4rZGpIEIAF9hgIK6hTw5ztBfRhENZRQZbb91mXNUzQ=)
 
 spring:
   datasource:
