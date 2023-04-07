@@ -4,18 +4,31 @@ server:
     context-path: /
     session:
       timeout: 30m
-  tomcat:
-    uri-encoding: UTF-8
-    threads:
-      max: 500
 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://peirong.co:3306/easyDrive
-    username: root
-    password: Re4030dd.
     type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://peirong.co/EasyDrive
+    username: root
+    password: T34X7i/AESfBBbvyrpRTCJFTY7gkpWqfKaPckRPySx80rg5nEZ7SIJgmM1EgXrzzv1UE5UUaytumgGkUZkpzkA==
+    druid:
+      public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJwC0siV5KntGBea3I7m0D5yTChgOn8GI+QB+2dcM2OShu9gB/rtw7vZ3J3ENvVKB35x/ILzR/UoY0ETDrEexPcCAwEAAQ==
+      connect-properties:
+        config.decrypt: true
+        config.decrypt.key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJwC0siV5KntGBea3I7m0D5yTChgOn8GI+QB+2dcM2OShu9gB/rtw7vZ3J3ENvVKB35x/ILzR/UoY0ETDrEexPcCAwEAAQ==
+      #use-ping-method: false
+      filter:
+        stat:
+          merge-sql: true
+          slow-sql-millis: 3000
+          log-slow-sql: true
+        config:
+          enabled: true
+      initial-size: 5
+      min-idle: 10
+      max-active: 20
+
 
   mail:
     default-encoding: utf-8
@@ -25,13 +38,9 @@ spring:
     username: ieep.roon@gmail.com
     #授权码
     password: rlzfyleueqmdhszv
-
     protocol: smtps
-
-
     #端口号465或587
     port: 465
-
     #其他参数
     properties:
       mail:

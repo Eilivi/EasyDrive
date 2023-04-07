@@ -8,8 +8,10 @@ import lombok.Data;
 /**
  * @author Peirong
  */
+
+
 @Data
-@TableName("users")
+@TableName("User")
 public class User {
     @TableId(type = IdType.AUTO)
     private Long id;

@@ -1,26 +1,23 @@
 package com.peirong.util;
 
 import com.peirong.entity.Email;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import javax.mail.internet.MimeMessage;
-import java.io.InputStream;
+import javax.annotation.Resource;
 import java.util.Date;
 
+/**
+ * @author Peirong
+ */
 @Component
 public class SendEmailUtil {
-    @Autowired
-    private JavaMailSender javaMailSender;
 
+    @Resource
+    private JavaMailSender javaMailSender;
     @Value("ieep.roon@gmail.com")
     private String sendFrom;
 

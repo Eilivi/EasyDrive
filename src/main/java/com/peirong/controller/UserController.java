@@ -3,14 +3,13 @@ package com.peirong.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.peirong.entity.User;
-import com.peirong.mapper.UserMapper;
 import com.peirong.service.UserService;
 import com.peirong.util.*;
-import com.tencentcloudapi.sms.v20190711.models.SendStatus;
+import com.squareup.okhttp.*;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -27,15 +26,14 @@ import java.util.concurrent.ExecutorService;
 public class UserController {
     @Resource
     UserService userService;
-    @Autowired
+    @Resource
     SendEmailUtil sendEmailUtil;
-@Autowired
-    UserMapper userMapper;
-    @Autowired
+
+    @Resource
     private ExecutorService executorService;
 
-    @PostMapping("/login")
-    public String login(@RequestBody User user, String authentic, HttpServletRequest request) {
+    @PostMapping("/login/{authentic}")
+    public String login(@RequestBody User user, @PathVariable("authentic") String authentic, HttpServletRequest request) {
 
         String auth = (String) request.getSession().getAttribute("captcha");
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
@@ -46,7 +44,7 @@ public class UserController {
             return "-2";
         } else if (result == null) {
             return "-3";
-        } else if (BCrypt.checkpw(user.getPassword(),result.getPassword()) && auth.equalsIgnoreCase(authentic)) {
+        } else if (BCrypt.checkpw(user.getPassword(), result.getPassword()) && auth.equalsIgnoreCase(authentic)) {
             request.getSession().removeAttribute("captcha");
             return result.getUsername();
         }
@@ -58,9 +56,9 @@ public class UserController {
         CaptchaUtil c = new CaptchaUtil(130, 40);
         String captchastr = c.getCode();
         HttpSession session = request.getSession();
-        session.setAttribute("captcha", captchastr);
         try {
             c.write(response.getOutputStream());
+            session.setAttribute("captcha", captchastr);
         } catch (IOException e) {
             session.removeAttribute("captcha");
         }
@@ -68,18 +66,16 @@ public class UserController {
         return "success";
     }
 
-    @GetMapping("/check")
-    public String check(String phoneOrEmail, String type) {
+    @GetMapping("/check/{phoneOrEmail}/{type}")
+    public String check(@PathVariable("phoneOrEmail") String phoneOrEmail, @PathVariable("type") String type) {
         User result;
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         if ("phone".equals(type)) {
-            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(User::getPhone, phoneOrEmail);
-            result = userService.getOne(queryWrapper);
         } else {
-            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(User::getEmail, phoneOrEmail);
-            result = userService.getOne(queryWrapper);
         }
+        result = userService.getOne(queryWrapper);
         if (result != null) {
             return "-1";
         } else {
@@ -87,17 +83,15 @@ public class UserController {
         }
     }
 
-    @GetMapping("/send-email")
-    public String sendEmail(String account, HttpServletRequest request) {
-        String code = String.format("%05d",new Random().nextInt(100000));
+    @GetMapping("/send-email/{account}")
+    public String sendEmail(@PathVariable("account") String account, HttpServletRequest request) {
+        String code = String.format("%05d", new Random().nextInt(100000));
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(300);
-        session.setAttribute("email-code-" + account, code);
 
         try {
-            executorService.execute(() -> {
-                sendEmailUtil.sendEmail(account,code);
-            });
+            executorService.execute(() -> sendEmailUtil.sendEmail(account, code));
+            session.setAttribute("email-code-" + account, code);
             return "0";
         } catch (Exception ex) {
             session.removeAttribute("email-code");
@@ -105,32 +99,34 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/send-message")
+    @RequestMapping(value = "/send-message/{account}")
     @ResponseBody
-    public String sendMessage(String account, HttpServletRequest request) {
-
-        String[] phones = {"+86" + account};
+    public String sendMessage(@PathVariable("account") String account, HttpServletRequest request) throws Exception {
         int vode = ValidateCode.generateValidateCode(6);
         String code = String.valueOf(vode);
-        Constants.voicode = code;
-        System.out.println(code);
+        OkHttpClient client = new OkHttpClient();
+        Request postRequest = new Request.Builder().url(SendSmsUtil.postURL(account, code)).get().build();
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(300);
-        session.setAttribute("phone-code-" + account, code);
-        System.out.println(session.getId());
+
         executorService.execute(() -> {
-            SendStatus[] ret = SendSmsUtil.sendSms(phones, code);
+            try {
+                String result = client.newCall(postRequest).execute().body().string();
+                session.setAttribute("phone-code-" + account, code);
+                System.out.println(result);
+            } catch (IOException e) {
+                session.removeAttribute("phone-code-" + account);
+                throw new RuntimeException(e);
+            }
         });
         return "0";
     }
 
-    @PostMapping("/register")
-    public String register(@RequestBody User user, String account, @RequestParam("verify") String verify, HttpServletRequest request) {
+    @PostMapping("/register/{verify}/{account}")
+    public String register(@RequestBody User user, @PathVariable("account") String account, @PathVariable("verify") String verify, HttpServletRequest request) {
         String code = (String) request.getSession().getAttribute("phone-code-" + account);
         String code1 = (String) request.getSession().getAttribute("email-code-" + account);
-        System.out.println(code1);
-        System.out.println(verify);
-        System.out.println(code);
+
         if (verify.equals(code) || verify.equals(code1)) {
             boolean result = userService.saveAccount(user);
             if (result) {
@@ -143,8 +139,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/recover")
-    public String recover(@RequestBody User user, String account, @RequestParam("verify") String verify, HttpServletRequest request) {
+    @PostMapping("/recover/{verify}/{account}")
+    public String recover(@RequestBody User user, @PathVariable("account") String account, @PathVariable("verify") String verify, HttpServletRequest request) {
         String code = (String) request.getSession().getAttribute("phone-code-" + account);
         String code1 = (String) request.getSession().getAttribute("email-code-" + account);
 
@@ -154,18 +150,10 @@ public class UserController {
             userNew.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("phone", user.getPhone()).or().eq("email", user.getEmail());
-            userService.update(userNew,queryWrapper);
+            userService.update(userNew, queryWrapper);
         } else {
             return "-1";
         }
-        return "0";
-    }
-
-    @PostMapping("/change-password")
-    public String change(User user) {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getPhone, user.getUsername()).or().eq(User::getEmail, user.getUsername());
-        User result = userService.getOne(queryWrapper);
         return "0";
     }
 }

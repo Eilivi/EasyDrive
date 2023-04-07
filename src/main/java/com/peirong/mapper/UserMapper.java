@@ -15,6 +15,4 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("SELECT COUNT(*) FROM users WHERE phone = #{phone} OR email = #{email}")
     int findByPhoneOrEmail(@Param("phone") String phone, @Param("email") String email);
 
-//    @Update("INSERT INTO users VALUES(account = #{phone} OR account = #{email})")
-//    int addUser(@Param("account") String account, @Param("username") String username, @Param("password") String password);
 }
