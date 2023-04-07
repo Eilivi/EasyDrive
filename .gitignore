@@ -19,7 +19,6 @@ target/
 *.iml
 *.ipr
 
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -33,3 +32,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/EasyDrive/src/main/resources/application.yml

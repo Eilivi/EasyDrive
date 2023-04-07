@@ -24,7 +24,7 @@ spring:
       connect-properties:
         config.decrypt: true
         config.decrypt.key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJwC0siV5KntGBea3I7m0D5yTChgOn8GI+QB+2dcM2OShu9gB/rtw7vZ3J3ENvVKB35x/ILzR/UoY0ETDrEexPcCAwEAAQ==
-      #use-ping-method: false
+      use-ping-method: false
       filter:
         stat:
           merge-sql: true
