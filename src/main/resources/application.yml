@@ -5,8 +5,8 @@ server:
     session:
       timeout: 30m
 
-SECRET_ID: ENC(9za+55jYIHU8XybJiNjZfFa37AQFdKeqgvNXZftDKCbnUdV4boCpZZosDKFvLUmeCGUG3Y/Zx4CpaHJJD5GDV1qMqj0Bgs3uWQTP/1yX2nQ=)
-SECRET_KEY: ENC(DguxSBSApI0j2g8bjZbLDmC3P81nTaWKq/NPts2u1CV5oe1+eh9MklFMgOsnkIa8LodRpp1sUFFxCEGf9GRLy4WzaH3AVNqPTaD2JP6Tizo=)
+SECRET_ID: ENC(LX+Dp8PemWOocmh63ZwpRi1zHipZzwTGIk1mzzGXWRGywDlA+6RRvBHuHyqZvzhzVcNOr6jPGKZy1SNoQRSwukBiNjoHGvBBQh1B073w0lU=)
+SECRET_KEY: ENC(XOofR17e0jwbkvG6NUq8opazCBSg01OHjYZyD1RhpuEBpWAj5qm5dJzCKC2dWxXOo4rZGpIEIAF9hgIK6hTw5ztBfRhENZRQZbb91mXNUzQ=)
 
 jasypt:
   encryptor:
@@ -44,7 +44,7 @@ spring:
     username: ENC(GfuerfntNoKS4DbmO5nyECEImuLKbJFAJw41yLVWHsySI0FfYKWqTeynpHjJ05vOqnuUuD2gISd9EVZqYmaNIg==)
     #授权码
     password: ENC(oK5DmXKZZ6vj700d/c40MTtFwtoOcj1jFAzAhrg+CbgYH1/Y5kRnHhkKcaaaK1d14wFMTAMuNiv+wgyFYtTKAg==)
-    protocol: smtps
+    protocol: smtp
     #端口号465或587
     port: 465
     #其他参数
@@ -52,9 +52,11 @@ spring:
       mail:
         #配置SSL 加密工厂
         smtp:
+          #socketFactory.port: 465
+          #socketFactory.class: javax.net.ssl.SSLSocketFactory
           ssl:
             #本地测试，先放开ssl
             enable: true
-            required: false
+            #required: false
           #开启debug模式，这样邮件发送过程的日志会在控制台打印出来，方便排查错误
         debug: true

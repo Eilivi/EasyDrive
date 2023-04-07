@@ -18,7 +18,7 @@ public class SendEmailUtil {
 
     @Resource
     private JavaMailSender javaMailSender;
-    @Value("ieep.roon@gmail.com")
+    @Value("${spring.mail.username}")
     private String sendFrom;
 
     public  void checkMail(Email mailRequest) {
