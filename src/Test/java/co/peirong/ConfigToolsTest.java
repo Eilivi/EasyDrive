@@ -16,12 +16,19 @@ public class ConfigToolsTest {
     @Autowired
     private StringEncryptor stringEncryptor;
 
-    @Value("${spring.mail.username}")
-    private String username;
+//    @Value("${spring.mail.password}")
+//    private String username;
 
     @Test
     public void testPassword() throws Exception {
+       // System.out.println(username);
+
+        String username = stringEncryptor.encrypt("ez.drive@foxmail.com");
+        //String password = stringEncryptor.encrypt("oduomzrmiurreebj");
+
+
         System.out.println(username);
+        //System.out.println(password);
 
     }
 }

@@ -48,8 +48,9 @@ public class UserController {
         } else if (BCrypt.checkpw(user.getPassword(), result.getPassword()) && auth.equalsIgnoreCase(authentic)) {
             request.getSession().removeAttribute("captcha");
             return result.getUsername();
+        } else {
+            return "-1";
         }
-        return "-1";
     }
 
     @GetMapping("/get-authentic")
@@ -88,7 +89,7 @@ public class UserController {
     public String sendEmail(@PathVariable("account") String account, HttpServletRequest request) {
         String code = String.format("%05d", new Random().nextInt(100000));
         HttpSession session = request.getSession();
-        session.setMaxInactiveInterval(300);
+        session.setMaxInactiveInterval(60);
 
         try {
             executorService.execute(() -> sendEmailUtil.sendEmail(account, code));

@@ -39,11 +39,11 @@ spring:
   mail:
     default-encoding: utf-8
     # 配置 SMTP 服务器地址
-    host: smtp.gmail.com
+    host: smtp.qq.com
     #发送方邮件名
-    username: ENC(GfuerfntNoKS4DbmO5nyECEImuLKbJFAJw41yLVWHsySI0FfYKWqTeynpHjJ05vOqnuUuD2gISd9EVZqYmaNIg==)
+    username: ENC(GDlPRRvCUTB5UKZYOL/AHIJWdqO1NoNpVsRg9MwBwqhlzaCxwk6JSoLslVY6aRdVLv1pId9tPG8fOTvnu5SKcg==)
     #授权码
-    password: ENC(oK5DmXKZZ6vj700d/c40MTtFwtoOcj1jFAzAhrg+CbgYH1/Y5kRnHhkKcaaaK1d14wFMTAMuNiv+wgyFYtTKAg==)
+    password: ENC(R2ja+nirvuqF/tgBkmW1rUy32oLLu/TCvXsGHgoea3PsnXGdSUZVF2crGuIYkkP3UKbUpWIlQ7bOsSwiDeKwgw==)
     protocol: smtp
     #端口号465或587
     port: 465
@@ -52,11 +52,12 @@ spring:
       mail:
         #配置SSL 加密工厂
         smtp:
+          auth: true
           #socketFactory.port: 465
           #socketFactory.class: javax.net.ssl.SSLSocketFactory
           ssl:
             #本地测试，先放开ssl
             enable: true
-            #required: false
+            required: false
           #开启debug模式，这样邮件发送过程的日志会在控制台打印出来，方便排查错误
         debug: true
