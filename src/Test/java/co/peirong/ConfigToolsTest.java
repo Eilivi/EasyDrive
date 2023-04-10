@@ -19,7 +19,9 @@ public class ConfigToolsTest {
     @Test
     public void testPassword() throws Exception {
 
+        String url = stringEncryptor.encrypt("");
         String username = stringEncryptor.encrypt("");
+        System.out.println(url);
         System.out.println(username);
 
     }

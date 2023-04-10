@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Update;
  */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    @Select("SELECT COUNT(*) FROM users WHERE phone = #{phone} OR email = #{email}")
+    @Select("SELECT COUNT(*) FROM User WHERE phone = #{phone} OR email = #{email}")
     int findByPhoneOrEmail(@Param("phone") String phone, @Param("email") String email);
 
 }
