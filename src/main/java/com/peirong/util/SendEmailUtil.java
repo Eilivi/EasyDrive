@@ -27,13 +27,12 @@ public class SendEmailUtil {
         Assert.notNull(mailRequest, "邮件请求不能为空");
         Assert.notNull(mailRequest.getSendTo(), "邮件收件人不能为空");
         Assert.notNull(mailRequest.getSubject(), "邮件主题不能为空");
-        Assert.notNull(mailRequest.getText(), "邮件收件人不能为空");
+        Assert.notNull(mailRequest.getText(), "邮件内容不能为空");
     }
 
     public void sendEmail(String sendTo, String code) {
         Email email = new Email();
 
-        email.setSendTo(sendTo);
         email.setSendTo(sendTo);
         email.setSubject("账户安全代码");
         email.setText("您的验证码为：" + code + "，有效时间为5分钟。");

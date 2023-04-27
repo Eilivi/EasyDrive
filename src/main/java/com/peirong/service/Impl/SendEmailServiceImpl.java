@@ -1,5 +1,6 @@
-package com.peirong.service;
+package com.peirong.service.Impl;
 
+import com.peirong.service.SendEmailService;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 

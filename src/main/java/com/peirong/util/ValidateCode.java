@@ -8,7 +8,7 @@ import java.util.Random;
 public  class  ValidateCode {
 
     public static Integer generateValidateCode(int length){
-        Integer code =null;
+        int code;
         if(length == 4){
             code = new Random().nextInt(9999);
             if(code < 1000){

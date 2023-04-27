@@ -4,25 +4,24 @@ import com.peirong.App;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static com.alibaba.druid.filter.config.ConfigTools.encrypt;
-import static com.alibaba.druid.filter.config.ConfigTools.genKeyPair;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import javax.annotation.Resource;
 
 @SpringBootTest(classes = {App.class})
 public class ConfigToolsTest {
-
     @Autowired
     private StringEncryptor stringEncryptor;
+    @Resource
+    BCryptPasswordEncoder encoder;
 
     @Test
     public void testPassword() throws Exception {
 
-        String url = stringEncryptor.encrypt("");
-        String username = stringEncryptor.encrypt("");
-        System.out.println(url);
-        System.out.println(username);
 
+
+        System.out.println(encoder.encode("Re4030dd."));
+
+        System.out.println(stringEncryptor.encrypt(""));
     }
 }

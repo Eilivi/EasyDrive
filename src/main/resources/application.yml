@@ -1,7 +1,6 @@
 server:
-  port: 8081
+  port: 8080
   servlet:
-    context-path: /
     session:
       timeout: 30m
 
@@ -9,16 +8,14 @@ jasypt:
   encryptor:
     password: REDLXIRGRETFD
 
+PRIVATE_KEY: MIICeQIBADANBgkqhkiG9w0BAQEFAASCAmMwggJfAgEAAoGBANC55yDrRaSNUSoZxf/DwgDGXrtSKoQT4nWnZjT2oqdNmxwiJOzpDAnFXiJSt0PYUVUKlunKHccyGcMPHux3fVAQ7vTAHF+wfvWsa0Rd1If89cNHACGjPqwtpC716TROhUefarFB/uvqhoyR2jgTXuINaOjB6wdnltFuePWvlnmZAgMBAAECgYEAv/Rn0gds6dMo9K31QK1YSnwkfOMoxITA/HCx9z1nArPFVU81ZEdC0e2YD7rAXf2fdrUhaup9DkdOF+xdBR0yuPkycqQUaYNUAPjkwkY/2J5EW3FHOcI+bCTf9u+tNQyWBfZAmJN1ijnnMfp2nOIayMIsStYmVGYsdXf0x86t910CQQDtuObdGzXN9CcX8C0izKt4NTPWxCtwZIWbDJDsyLhM2sd/Kvw3xhyUtaUCNU/Tf3nWrZaWBjaWgFJ8p4BA0GTTAkEA4MZFCtQmiOayGd/H5WWOouEy/lbi55LAyw7Nb1EDVzXCpzKOxi0/5VdGLfIAdhsffipo2vqDhNievU9MxQUUYwJBAKAZG9ojHixTVxTHGw7Jul1dr0jfmsW53UUbxGrDj2OrIBoj7/L8CHmaj8OZ9eXhf0O2aqklDBR13Ze4EycTciMCQQCqWDhMy5jkmYkSKNDyXbPqZqbhr/FINKSdfvtbyFayyhBZ6+vd7r8EzM5n1YZZ+5YzZGqQwdfYXt52c9mnWoEnAkEA1D5rU/rP5LSHJ4//iS8Rcum1fM5dxa/TbFTZQjphTwjtZV1W9+GAiWG7ZsKzuKk5EBs4qjcc7grt0ISbtWknfw==
+
 SECRET_ID: ENC(LX+Dp8PemWOocmh63ZwpRi1zHipZzwTGIk1mzzGXWRGywDlA+6RRvBHuHyqZvzhzVcNOr6jPGKZy1SNoQRSwukBiNjoHGvBBQh1B073w0lU=)
 SECRET_KEY: ENC(XOofR17e0jwbkvG6NUq8opazCBSg01OHjYZyD1RhpuEBpWAj5qm5dJzCKC2dWxXOo4rZGpIEIAF9hgIK6hTw5ztBfRhENZRQZbb91mXNUzQ=)
 
-management:
-  endpoint:
-    web:
-      exposure:
-        include: health
-
 spring:
+  #main:
+    #allow-bean-definition-overriding: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
@@ -42,12 +39,11 @@ spring:
       min-idle: 10
       max-active: 20
 
-  redis:
-    host: 1.15.89.164
-    #port: 1206
-    #password: ENC()
-    #cluster:
-
+#  redis:
+#    host: 1.15.89.164
+#    #port: 1206
+#    #password: ENC()
+#    #cluster:
 
   mail:
     default-encoding: utf-8
