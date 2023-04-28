@@ -14,7 +14,6 @@ import java.util.Date;
 @ToString(callSuper = true)
 @TableName("File")
 public class File {
-
     private Long id;
     private Long user_id;
     private Long parent_id;
@@ -24,5 +23,4 @@ public class File {
     private String type;
     private Date created_at;
     private Date update_time;
-
 }

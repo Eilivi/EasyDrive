@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutorService;
  * @author Peirong
  */
 @RestController
+@RequestMapping("/before")
 public class BeforeLoginController {
     @Resource
     private UserService userService;
@@ -112,7 +113,7 @@ public class BeforeLoginController {
         return false;
     }
 
-    @PostMapping("/recover/{verify}/{account}")
+    @PostMapping("/changePasswordToRecover/{verify}/{account}")
     public boolean recover(@RequestBody Map<String, String> map,
                            @PathVariable("verify") String verify,
                            @PathVariable("account") String account) {
@@ -131,7 +132,4 @@ public class BeforeLoginController {
         }
         return true;
     }
-
-
-
 }
