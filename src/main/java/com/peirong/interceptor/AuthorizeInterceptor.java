@@ -1,6 +1,6 @@
 package com.peirong.interceptor;
 
-import com.peirong.entity.user.AccountUser;
+import com.peirong.entity.AccountForLogging;
 import com.peirong.mapper.UserMapper;
 
 import org.springframework.security.core.Authentication;
@@ -25,7 +25,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
         Authentication authentication = context.getAuthentication();
         User user = (User)authentication.getPrincipal();
         String username = user.getUsername();
-        AccountUser account = mapper.findAccountUserByNameOrEmailOrPhone(username);
+        AccountForLogging account = mapper.findAccountUserByNameOrEmailOrPhone(username);
         request.getSession().setAttribute("account", account);
         return true;
     }

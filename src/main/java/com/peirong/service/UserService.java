@@ -8,8 +8,5 @@ import com.peirong.entity.Account;
  */
 public interface UserService extends IService<Account> {
     boolean saveAccount(Account account);
-
     Account updateAvatar(Account account);
-
-
 }

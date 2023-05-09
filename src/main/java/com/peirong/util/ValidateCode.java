@@ -1,13 +1,11 @@
 package com.peirong.util;
 
 import org.springframework.stereotype.Component;
-
 import java.util.Random;
 
 @Component
-public  class  ValidateCode {
-
-    public static Integer generateValidateCode(int length){
+public class ValidateCode {
+    public static int generateValidateCode(int length){
         int code;
         if(length == 4){
             code = new Random().nextInt(9999);

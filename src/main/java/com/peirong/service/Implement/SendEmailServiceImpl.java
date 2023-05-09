@@ -1,4 +1,4 @@
-package com.peirong.service.Impl;
+package com.peirong.service.Implement;
 
 import com.peirong.service.SendEmailService;
 import org.springframework.mail.javamail.JavaMailSender;

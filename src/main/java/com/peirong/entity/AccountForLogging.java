@@ -1,12 +1,13 @@
-package com.peirong.entity.user;
+package com.peirong.entity;
 
 
 import lombok.Data;
 
 @Data
-public class AccountUser {
+public class AccountForLogging {
     Long id;
     String username;
     String phone;
     String email;
+    String avatar;
 }

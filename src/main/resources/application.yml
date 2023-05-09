@@ -4,6 +4,14 @@ server:
     session:
       timeout: 30m
 
+uploadPath: /Users/peirong/file/
+
+#mybatis-plus:
+  #config-location: classpath:mybatis/mybatis-config.xml
+  #mapper-locations: classpath:mybatis/mapper/*.xml
+  #configuration:
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 jasypt:
   encryptor:
     password: REDLXIRGRETFD
@@ -14,8 +22,13 @@ SECRET_ID: ENC(LX+Dp8PemWOocmh63ZwpRi1zHipZzwTGIk1mzzGXWRGywDlA+6RRvBHuHyqZvzhzV
 SECRET_KEY: ENC(XOofR17e0jwbkvG6NUq8opazCBSg01OHjYZyD1RhpuEBpWAj5qm5dJzCKC2dWxXOo4rZGpIEIAF9hgIK6hTw5ztBfRhENZRQZbb91mXNUzQ=)
 
 spring:
-  #main:
-    #allow-bean-definition-overriding: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
@@ -38,12 +51,6 @@ spring:
       initial-size: 5
       min-idle: 10
       max-active: 20
-
-#  redis:
-#    host: 1.15.89.164
-#    #port: 1206
-#    #password: ENC()
-#    #cluster:
 
   mail:
     default-encoding: utf-8

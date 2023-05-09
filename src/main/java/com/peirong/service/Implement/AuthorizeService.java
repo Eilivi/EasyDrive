@@ -1,4 +1,4 @@
-package com.peirong.service.Impl;
+package com.peirong.service.Implement;
 
 import com.peirong.entity.Account;
 import com.peirong.mapper.UserMapper;
@@ -19,12 +19,12 @@ public class AuthorizeService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (username == null)
             throw new UsernameNotFoundException("用户名不能为空");
-        Account user =  userMapper.findUserByUsernameOrPhoneOrEmail(username);
-        if (user == null)
+        Account account =  userMapper.findUserByUsernameOrPhoneOrEmail(username);
+        if (account == null)
             throw new UsernameNotFoundException("用户名或密码错误");
         return User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
+                .withUsername(account.getUsername())
+                .password(account.getPassword())
                 .roles("user")
                 .build();
     }

@@ -1,8 +1,8 @@
 package com.peirong.config;
 
 import com.alibaba.fastjson.JSONObject;
-import com.peirong.entity.RestBean;
-import com.peirong.service.Impl.AuthorizeService;
+import com.peirong.entity.RestBeanResponse;
+import com.peirong.service.Implement.AuthorizeService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                                            PersistentTokenRepository repository) throws Exception {
         return http
                 .authorizeHttpRequests()
-                .antMatchers("/before/**").permitAll()
+                .antMatchers("/before/**","/file/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -73,12 +73,16 @@ public class SecurityConfiguration {
         jdbcTokenRepository.setCreateTableOnStartup(false);
         return jdbcTokenRepository;
     }
-    private CorsConfigurationSource configurationSource() {
+    @Bean
+    public CorsConfigurationSource configurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
         cors.addAllowedOriginPattern("*");
         cors.setAllowCredentials(true);
         cors.addAllowedHeader("*");
-        cors.addAllowedMethod("*");
+        cors.addAllowedMethod("GET");
+        cors.addAllowedMethod("POST");
+        cors.addAllowedMethod("PUT");
+        cors.addAllowedMethod("DELETE");
         cors.addExposedHeader("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cors);
@@ -103,14 +107,14 @@ public class SecurityConfiguration {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         response.setCharacterEncoding("utf-8");
         if (request.getRequestURI().endsWith("/login"))
-            response.getWriter().write(JSONObject.toJSONString(RestBean.success("登录成功")));
+            response.getWriter().write(JSONObject.toJSONString(RestBeanResponse.success("登录成功")));
         else if (request.getRequestURI().endsWith("/logout"))
-            response.getWriter().write(JSONObject.toJSONString(RestBean.success("退出登录成功")));
+            response.getWriter().write(JSONObject.toJSONString(RestBeanResponse.success("退出登录成功")));
     }
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
         response.setCharacterEncoding("utf-8");
-        response.getWriter().write(JSONObject.toJSONString(RestBean.failure(401, exception.getMessage())));
+        response.getWriter().write(JSONObject.toJSONString(RestBeanResponse.failure(401, exception.getMessage())));
     }
 }
 

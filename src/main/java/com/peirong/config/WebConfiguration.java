@@ -18,7 +18,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .addInterceptor(authorizeInterceptor)
                 // 拦截所有请求
                 .addPathPatterns("/**")
-                // 不拦截的请求、注册、找回密码等请求
-                .excludePathPatterns("/before/**");
+                // 不拦截的请求、注册、找回密码等请求    测试阶段放行file接口的所有请求，测试完成后关闭。
+                .excludePathPatterns("/before/**","/file/**");
     }
 }

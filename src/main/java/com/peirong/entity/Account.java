@@ -17,7 +17,7 @@ import java.sql.Date;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("User")
+@TableName("user")
 public class Account {
 
     @TableId(type = IdType.AUTO)
