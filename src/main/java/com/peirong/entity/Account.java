@@ -13,10 +13,7 @@ import java.sql.Date;
  */
 
 @Data
-@Builder
 @ToString(callSuper = true)
-@NoArgsConstructor
-@AllArgsConstructor
 @TableName("user")
 public class Account {
 

@@ -32,7 +32,6 @@ public class SendEmailUtil {
 
     public void sendEmail(String sendTo, String code) {
         Email email = new Email();
-
         email.setSendTo(sendTo);
         email.setSubject("账户安全代码");
         email.setText("您的验证码为：" + code + "，有效时间为5分钟。");

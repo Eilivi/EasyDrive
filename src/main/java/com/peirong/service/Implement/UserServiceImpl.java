@@ -19,7 +19,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, Account> implements
     BCryptPasswordEncoder encoder;
     public boolean saveAccount(Account account) {
 
-        //System.out.println(user);
         int count = findByPhoneOrEmail(account.getPhone(), account.getEmail());
         if (count > 0) {
             return false;
@@ -31,7 +30,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, Account> implements
 
     @Override
     public Account updateAvatar(Account user) {
-        //user.setAvatar();
         return null;
     }
     public int findByPhoneOrEmail(String phone, String email) {
@@ -42,5 +40,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, Account> implements
         if (rows <= 0) {
             throw new RuntimeException("更新用户头像失败");
         }
+    }
+
+    @Override
+    public Account updateUsernameById(Account account) {
+        int rows = userMapper.updateById(account);
+        return rows > 0 ? account : null;
     }
 }
