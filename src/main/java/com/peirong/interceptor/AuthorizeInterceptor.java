@@ -27,6 +27,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
         String username = user.getUsername();
         Account account = mapper.findUserByUsernameOrPhoneOrEmail(username);
         request.getSession().setAttribute("account", account);
+
         return true;
     }
 }

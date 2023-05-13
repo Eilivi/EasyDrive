@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                                            PersistentTokenRepository repository) throws Exception {
         return http
                 .authorizeHttpRequests()
-                .antMatchers("/before/**","/file/**").permitAll()
+                .antMatchers("/before/**","/file/**","/check/user").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
