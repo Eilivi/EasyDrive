@@ -1,7 +1,7 @@
 package com.peirong.config;
 
 import com.alibaba.fastjson.JSONObject;
-import com.peirong.entity.RestBeanResponse;
+import com.peirong.entity.RestResponse;
 import com.peirong.service.Implement.AuthorizeService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                                            PersistentTokenRepository repository) throws Exception {
         return http
                 .authorizeHttpRequests()
-                .antMatchers("/before/**","/file/**","/check/user").permitAll()
+                .antMatchers("/before/**","/file/**","/check/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -107,14 +107,14 @@ public class SecurityConfiguration {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         response.setCharacterEncoding("utf-8");
         if (request.getRequestURI().endsWith("/login"))
-            response.getWriter().write(JSONObject.toJSONString(RestBeanResponse.success("登录成功")));
+            response.getWriter().write(JSONObject.toJSONString(RestResponse.success("登录成功")));
         else if (request.getRequestURI().endsWith("/logout"))
-            response.getWriter().write(JSONObject.toJSONString(RestBeanResponse.success("退出登录成功")));
+            response.getWriter().write(JSONObject.toJSONString(RestResponse.success("退出登录成功")));
     }
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
         response.setCharacterEncoding("utf-8");
-        response.getWriter().write(JSONObject.toJSONString(RestBeanResponse.failure(401, exception.getMessage())));
+        response.getWriter().write(JSONObject.toJSONString(RestResponse.failure(401, exception.getMessage())));
     }
 }
 

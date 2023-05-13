@@ -13,6 +13,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @Component
 public class AuthorizeInterceptor implements HandlerInterceptor {
@@ -27,6 +28,9 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
         String username = user.getUsername();
         Account account = mapper.findUserByUsernameOrPhoneOrEmail(username);
         request.getSession().setAttribute("account", account);
+
+        HttpSession session = request.getSession();
+        session.setAttribute("user", account);
 
         return true;
     }
