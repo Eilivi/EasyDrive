@@ -17,21 +17,16 @@ public class CheckUserController {
     @Resource
     private HttpServletRequest request;
 
-    @GetMapping("/user2")
+    @GetMapping("/user")
     public Map<String, String> check() {
         Map<String, String> map = new HashMap<>();
         HttpSession session = request.getSession();
-        Account account = (Account) session.getAttribute("user");
+        String account = (String) session.getAttribute("user");
         if (account == null) {
             map.put("msg", "fail");
         } else {
             map.put("msg", "success");
         }
         return map;
-    }
-
-    @GetMapping("/user")
-    public RestResponse<Account> CheckUsername(@SessionAttribute Account account) {
-        return RestResponse.success(account);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
@@ -106,8 +107,10 @@ public class SecurityConfiguration {
     }
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         response.setCharacterEncoding("utf-8");
-        if (request.getRequestURI().endsWith("/login"))
-            response.getWriter().write(JSONObject.toJSONString(RestResponse.success("登录成功")));
+        if (request.getRequestURI().endsWith("/login")) {
+            User user = (User)authentication.getPrincipal();
+            request.getSession().setAttribute("user", user.getUsername());
+            response.getWriter().write(JSONObject.toJSONString(RestResponse.success("登录成功")));}
         else if (request.getRequestURI().endsWith("/logout"))
             response.getWriter().write(JSONObject.toJSONString(RestResponse.success("退出登录成功")));
     }
