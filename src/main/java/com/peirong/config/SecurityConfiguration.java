@@ -1,7 +1,10 @@
 package com.peirong.config;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.peirong.entity.Account;
 import com.peirong.entity.RestResponse;
+import com.peirong.mapper.UserMapper;
 import com.peirong.service.Implement.AuthorizeService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +37,9 @@ public class SecurityConfiguration {
     @Resource
     private AuthorizeService authorizeService;
     @Resource
-    DataSource dataSource;
+    private DataSource dataSource;
+    @Resource
+    private UserMapper mapper;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            PersistentTokenRepository repository) throws Exception {
@@ -51,11 +56,6 @@ public class SecurityConfiguration {
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(this::onAuthenticationSuccess)
-                .and()
-                .rememberMe()
-                .rememberMeParameter("remember")
-                .tokenRepository(repository)
-                .tokenValiditySeconds(60 * 60 * 24 * 7)
                 .and()
                 .csrf()
                 .disable()
@@ -110,6 +110,8 @@ public class SecurityConfiguration {
         if (request.getRequestURI().endsWith("/login")) {
             User user = (User)authentication.getPrincipal();
             request.getSession().setAttribute("user", user.getUsername());
+            Account account = mapper.selectOne(new QueryWrapper<Account>().eq("username", user.getUsername()));
+            request.getSession().setAttribute("account", account);
             response.getWriter().write(JSONObject.toJSONString(RestResponse.success("登录成功")));}
         else if (request.getRequestURI().endsWith("/logout"))
             response.getWriter().write(JSONObject.toJSONString(RestResponse.success("退出登录成功")));

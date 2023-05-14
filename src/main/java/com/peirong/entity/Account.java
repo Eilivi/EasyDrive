@@ -17,7 +17,7 @@ import java.sql.Date;
 @TableName("user")
 public class Account {
 
-    @TableId(type = IdType.AUTO)
+    //@TableId(type = IdType.AUTO)
     @Id
     private Long id;
     private String username;

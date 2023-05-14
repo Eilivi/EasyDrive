@@ -30,11 +30,13 @@ public class AfterLoginController {
     private BCryptPasswordEncoder encoder;
     @Resource
     private SendEmailAndMessage send;
+    @Resource
+    private HttpServletRequest request;
 
     private static final String UPLOAD_DIR = "/Users/peirong/avatar";
 
     @PostMapping("UpdateAvatar")
-    public RestResponse<String> uploadImage(@RequestParam("file") MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public RestResponse<String> uploadImage(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
         Account account = (Account) request.getSession().getAttribute("account");
         Long id = account.getId();
 
@@ -71,19 +73,19 @@ public class AfterLoginController {
     }
 
     @PostMapping("UpdatePhone")
-    public RestResponse<String> updatePhone(@RequestBody Map<String,String> map, HttpServletResponse response, HttpServletRequest request) {
-        Account account = (Account) request.getSession().getAttribute("account");
+    public RestResponse<String> updatePhone(@RequestBody Map<String,String> map, HttpServletResponse response) {
         String codeFromPhone = (String) request.getSession().getAttribute("phone-code-" + map.get("phone"));
         LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Account::getPhone, map.get("phone"));
         Account checkPhoneHaveOrNot = userService.getOne(queryWrapper);
+
         if (checkPhoneHaveOrNot != null) {
             return RestResponse.failure(401, "手机号已被占用");
         } else if (codeFromPhone.matches(map.get("code"))) {
-            account.setId(account.getId());
+            Account account = (Account) request.getSession().getAttribute("account");
             account.setPhone(map.get("phone"));
             userService.updateById(account);
-            return RestResponse.success("修改成功");
+            return RestResponse.success("修改成功，请重新登录");
         }
         return RestResponse.failure(401,"验证码错误");
     }
@@ -103,7 +105,7 @@ public class AfterLoginController {
     }
     @PostMapping("UpdateEmail")
     public RestResponse<String> updateEmail(@RequestBody Map<String, String> map, HttpServletResponse response, HttpServletRequest request) {
-        Account account = (Account) request.getSession().getAttribute("account");
+
         String codeFromEmail = (String) request.getSession().getAttribute("email-code-" + map.get("email"));
         LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Account::getEmail, map.get("email"));
@@ -111,46 +113,40 @@ public class AfterLoginController {
         if (checkEmailHaveOrNot != null) {
             return RestResponse.failure(401, "邮箱已被占用");
         } else if (codeFromEmail.matches(map.get("code"))) {
-            account.setId(account.getId());
+            Account account = (Account) request.getSession().getAttribute("account");
             account.setEmail(map.get("email"));
             userService.updateById(account);
-            return RestResponse.success("修改成功");
+            return RestResponse.success("修改成功，请重新登录");
         }
         return RestResponse.failure(401,"验证码错误");
     }
 
     @PostMapping("UpdatePassword")
-    public RestResponse<String> updatePassword(@RequestBody Map<String, String> map, HttpServletResponse response, HttpServletRequest request) {
-        Account account = (Account) request.getSession().getAttribute("account");
-        Long id = account.getId();
+    public RestResponse<String> updatePassword(@RequestBody Map<String, String> map, HttpServletResponse response) {
         String oldPassword = map.get("oldPassword");
         String newPassword = map.get("newPassword");
-
         LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
-
+        Account account = (Account) request.getSession().getAttribute("account");
         if (encoder.matches(newPassword, account.getPassword())) {
             return RestResponse.failure(401, "新密码不能与旧密码相同");
         } else if (encoder.matches(oldPassword, account.getPassword())) {
-            account.setId(id);
             account.setPassword(encoder.encode(newPassword));
             userService.updateById(account);
-            return RestResponse.success("修改成功");
+            return RestResponse.success("修改成功，请重新登录");
         } else {
             return RestResponse.failure(401, "原密码错误");
         }
     }
 
     @PostMapping("UpdateUsername")
-    public RestResponse<String> updateUsername(@RequestBody Map<String, String> map, HttpServletResponse response, HttpServletRequest request) {
-        Account account = (Account) request.getSession().getAttribute("account");
-        Long id = account.getId();
+    public RestResponse<String> updateUsername(@RequestBody Map<String, String> map, HttpServletResponse response) {
         LambdaQueryWrapper<Account> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Account::getUsername, map.get("username"));
         Account checkUsernameHaveOrNot = userService.getOne(queryWrapper);
         if (checkUsernameHaveOrNot != null) {
             return RestResponse.failure(401, "昵称已被占用");
         } else {
-            account.setId(id);
+            Account account = (Account) request.getSession().getAttribute("account");
             account.setUsername(map.get("username"));
             userService.updateById(account);
             return RestResponse.success("修改成功");

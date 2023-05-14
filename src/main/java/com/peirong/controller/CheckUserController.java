@@ -21,11 +21,16 @@ public class CheckUserController {
     public Map<String, String> check() {
         Map<String, String> map = new HashMap<>();
         HttpSession session = request.getSession();
-        String account = (String) session.getAttribute("user");
+        //String account = (String) session.getAttribute("user");
+        Account account = (Account) session.getAttribute("account");
         if (account == null) {
             map.put("msg", "fail");
         } else {
             map.put("msg", "success");
+            map.put("username", account.getUsername());
+            map.put("phone", account.getPhone());
+            map.put("email", account.getEmail());
+            map.put("avatar", account.getAvatar());
         }
         return map;
     }
