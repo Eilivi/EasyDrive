@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 /**
@@ -15,8 +16,7 @@ import java.sql.Date;
 @Data
 @ToString(callSuper = true)
 @TableName("user")
-public class Account {
-
+public class Account implements Serializable {
     //@TableId(type = IdType.AUTO)
     @Id
     private Long id;

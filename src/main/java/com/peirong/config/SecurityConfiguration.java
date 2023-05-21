@@ -8,6 +8,8 @@ import com.peirong.mapper.UserMapper;
 import com.peirong.service.Implement.AuthorizeService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,12 +42,14 @@ public class SecurityConfiguration {
     private DataSource dataSource;
     @Resource
     private UserMapper mapper;
+    @Resource
+    private RedisTemplate redisTemplate;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            PersistentTokenRepository repository) throws Exception {
         return http
                 .authorizeHttpRequests()
-                .antMatchers("/before/**","/file/**","/check/**").permitAll()
+                .antMatchers("/before/**","/file/**","/check/**","/after/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -56,6 +60,11 @@ public class SecurityConfiguration {
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(this::onAuthenticationSuccess)
+                .and()
+                .rememberMe()
+                .rememberMeParameter("remember")
+                .tokenRepository(this.tokenRepository())
+                .tokenValiditySeconds(60 * 60 * 24 * 7)
                 .and()
                 .csrf()
                 .disable()
@@ -111,10 +120,14 @@ public class SecurityConfiguration {
             User user = (User)authentication.getPrincipal();
             request.getSession().setAttribute("user", user.getUsername());
             Account account = mapper.selectOne(new QueryWrapper<Account>().eq("username", user.getUsername()));
-            request.getSession().setAttribute("account", account);
+            redisTemplate.opsForValue().set("account_" + account.getId().toString(), account);
             response.getWriter().write(JSONObject.toJSONString(RestResponse.success("登录成功")));}
         else if (request.getRequestURI().endsWith("/logout"))
+        {
+            redisTemplate.delete("account");
             response.getWriter().write(JSONObject.toJSONString(RestResponse.success("退出登录成功")));
+        }
+
     }
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {

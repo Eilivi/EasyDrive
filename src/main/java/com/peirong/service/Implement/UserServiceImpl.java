@@ -17,34 +17,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, Account> implements
     private UserMapper userMapper;
     @Resource
     BCryptPasswordEncoder encoder;
-    public boolean saveAccount(Account account) {
+    public String saveAccount(Account account) {
 
         int count = findByPhoneOrEmail(account.getPhone(), account.getEmail());
         if (count > 0) {
-            return false;
+            return "该手机号或邮箱已被注册";
         }
         account.setPassword(encoder.encode(account.getPassword()));
         int result = userMapper.insert(account);
-        return result > 0;
-    }
-
-    @Override
-    public Account updateAvatar(Account user) {
-        return null;
+        return result > 0 ? "注册成功" : "注册失败";
     }
     public int findByPhoneOrEmail(String phone, String email) {
         return userMapper.findByPhoneOrEmail(phone, email);
-    }
-    public void updateAvatar(Long id, String avatar) {
-        int rows = userMapper.updateAvatarById(id, avatar);
-        if (rows <= 0) {
-            throw new RuntimeException("更新用户头像失败");
-        }
-    }
-
-    @Override
-    public Account updateUsernameById(Account account) {
-        int rows = userMapper.updateById(account);
-        return rows > 0 ? account : null;
     }
 }

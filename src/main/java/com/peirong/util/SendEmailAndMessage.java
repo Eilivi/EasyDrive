@@ -36,7 +36,6 @@ public class SendEmailAndMessage {
             try {
                 String sendTool = client.newCall(postRequest).execute().body().string();
                 session.setAttribute("phone-code-" + account, code);
-                System.out.println("phone-code-" + account);
             } catch (IOException e) {
                 session.removeAttribute("phone-code-" + account);
                 throw new RuntimeException(e);
@@ -45,10 +44,11 @@ public class SendEmailAndMessage {
     }
 
     public void sendEmail(String account) {
-        String code = String.format("%05d", new Random().nextInt(100000));
+        String code = String.format("%06d", new Random().nextInt(100000));
+        System.out.println(code);
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(60);
-        System.out.println(account);
+        //System.out.println(account);
         try {
             executorService.execute(() -> sendEmailUtil.sendEmail(account, code));
             session.setAttribute("email-code-" + account, code);

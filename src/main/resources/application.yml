@@ -5,6 +5,12 @@ server:
       timeout: 30m
 
 uploadPath: /Users/peirong/file/
+uploadAvatar: /Users/peirong/avatar/
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
 
 jasypt:
   encryptor:
@@ -21,6 +27,10 @@ SECRET_ID: ENC(LX+Dp8PemWOocmh63ZwpRi1zHipZzwTGIk1mzzGXWRGywDlA+6RRvBHuHyqZvzhzV
 SECRET_KEY: ENC(XOofR17e0jwbkvG6NUq8opazCBSg01OHjYZyD1RhpuEBpWAj5qm5dJzCKC2dWxXOo4rZGpIEIAF9hgIK6hTw5ztBfRhENZRQZbb91mXNUzQ=)
 
 spring:
+  redis:
+    host: 1.15.89.164
+    port: 6379
+    password: ENC(qm2u/emBLxXGrZN1fP2NmC+J1tEKh0OadE4/vkE0vxwzddrIYRk66PYfQSgq6cO4)
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

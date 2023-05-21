@@ -1,30 +1,28 @@
 package com.peirong.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.peirong.entity.FileEntity;
+import com.peirong.entity.Files;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 
 /**
  * @author Peirong
  */
 @Mapper
-public interface FileMapper extends BaseMapper<FileEntity> {
+public interface FileMapper extends BaseMapper<Files> {
 
     @Select("SELECT * FROM file WHERE filename = #{filename}")
-    FileEntity findByFilename(String filename);
+    Files findByFilename(String filename);
 
     @Select("SELECT * FROM file WHERE id = #{id}")
-    FileEntity findById(Long id);
+    Files findById(Long id);
 
     @Select("SELECT * FROM file WHERE path = #{path}")
-    FileEntity findByPath(String path);
+    Files findByPath(String path);
 
-    @Select("SELECT * FROM file WHERE owner = #{owner}")
-    FileEntity findByOwner(Long owner);
-
-    @Select("SELECT * FROM file WHERE filepath = #{filepath}")
-    FileEntity findByFilepath(String filepath);
-
+    @Select("SELECT * FROM file WHERE uid = #{owner}")
+    Files findByOwner(Long owner);
 }

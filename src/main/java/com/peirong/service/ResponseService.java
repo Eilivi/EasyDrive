@@ -1,6 +1,6 @@
-package com.peirong.util;
+package com.peirong.service;
 
-public interface Result {
+public interface ResponseService {
 
     String CODE = "code";
     String SUCCESS = "success";

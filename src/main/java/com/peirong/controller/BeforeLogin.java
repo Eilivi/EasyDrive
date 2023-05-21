@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
  */
 @RestController
 @RequestMapping("/before")
-public class BeforeLoginController {
+public class BeforeLogin {
     @Resource
     private UserService userService;
     @Resource
@@ -107,16 +107,12 @@ public class BeforeLoginController {
     @PostMapping("register")
     public RestResponse<String> register(@RequestBody Map<String, String> map) {
         String verify = map.get("verify");
-        System.out.println(verify);
-
         String account = map.get("account");
-        System.out.println(account);
-
         String codeFromPhone = (String) request.getSession().getAttribute("phone-code-" + account);
         String codeFromEmail = (String) request.getSession().getAttribute("email-code-" + account);
         Account newAccount = new Account();
         if (codeFromPhone == null && codeFromEmail == null)
-            return RestResponse.failure(401,"验证码已过期");
+            return RestResponse.failure(401, "验证码已过期");
         else if (verify.equals(codeFromPhone) || verify.equals(codeFromEmail)) {
             if (account.matches(EMAIL_REGEX)) {
                 newAccount.setEmail(map.get("account"));
@@ -127,9 +123,9 @@ public class BeforeLoginController {
                 newAccount.setUsername(map.get("username"));
                 newAccount.setPassword(map.get("password"));
             }
-            userService.saveAccount(newAccount);
-            return RestResponse.success("注册成功");
-        } else return RestResponse.failure(401,"验证码错误");
+            return RestResponse.success(userService.saveAccount(newAccount));
+        } else
+            return RestResponse.failure(401, "验证码错误");
     }
 
     @PostMapping("ChangePasswordToRecover")
@@ -140,7 +136,7 @@ public class BeforeLoginController {
         String codeFromEmail = (String) request.getSession().getAttribute("email-code-" + account);
 
         if (codeFromPhone == null && codeFromEmail == null)
-            return RestResponse.failure(401,"验证码已过期");
+            return RestResponse.failure(401, "验证码已过期");
         else if (verify.equals(codeFromPhone) || verify.equals(codeFromEmail)) {
             Account setNewPassword = new Account();
             setNewPassword.setPassword(encoder.encode(map.get("password")));
@@ -149,7 +145,7 @@ public class BeforeLoginController {
             queryWrapper.eq("phone", map.get("account")).or().eq("email", map.get("account"));
             userService.update(setNewPassword, queryWrapper);
         } else {
-            return RestResponse.failure(401,"验证码错误");
+            return RestResponse.failure(401, "验证码错误");
         }
         return RestResponse.success("修改成功，请登录");
     }

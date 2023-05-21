@@ -18,9 +18,9 @@ public interface UserMapper extends BaseMapper<Account> {
     @Select("SELECT * FROM user WHERE username = #{username} OR phone = #{username} OR email = #{username}")
     Account findUserByUsernameOrPhoneOrEmail(@Param("username") String username);
 
-    @Update("UPDATE user SET avatar = #{avatar} WHERE id = #{id}")
-    int updateAvatarById(@Param("id") Long id, @Param("avatar") String avatar);
+    @Select("SELECT id FROM user WHERE username = #{username} OR phone = #{username} OR email = #{username}")
+    Long findIdByUsernameOrPhoneOrEmail(@Param("username") String username);
 
-    @Update("UPDATE user SET username = #{username} WHERE id = #{id}")
-    Account updateUsernameById(@Param("id") Long id, @Param("username") String username);
+    @Select("SELECT avatar FROM user WHERE id = #{id}")
+    String findAvatarById(@Param("id") String id);
 }

@@ -35,7 +35,7 @@ public class SendSmsUtil {
         for (String k : params.keySet()) {
             s2s.append(k).append("=").append(params.get(k).toString()).append("&");
         }
-        return s2s.toString().substring(0, s2s.length() - 1);
+        return s2s.substring(0, s2s.length() - 1);
     }
 
     public String getUrl(TreeMap<String, Object> params) throws UnsupportedEncodingException {
