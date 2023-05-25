@@ -6,7 +6,7 @@ import com.peirong.entity.Account;
 import com.peirong.mapper.UserMapper;
 import com.peirong.service.ResponseService;
 import com.peirong.service.UserService;
-import com.peirong.util.SendEmailAndMessage;
+import com.peirong.util.SendEmailMessage;
 import com.peirong.util.UUIDUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,7 +34,7 @@ public class AfterLogin {
     @Resource
     private BCryptPasswordEncoder encoder;
     @Resource
-    private SendEmailAndMessage send;
+    private SendEmailMessage send;
     @Resource
     private HttpServletRequest request;
     @Resource

@@ -13,16 +13,4 @@ import java.util.List;
  */
 @Mapper
 public interface FileMapper extends BaseMapper<Files> {
-
-    @Select("SELECT * FROM file WHERE filename = #{filename}")
-    Files findByFilename(String filename);
-
-    @Select("SELECT * FROM file WHERE id = #{id}")
-    Files findById(Long id);
-
-    @Select("SELECT * FROM file WHERE path = #{path}")
-    Files findByPath(String path);
-
-    @Select("SELECT * FROM file WHERE uid = #{owner}")
-    Files findByOwner(Long owner);
 }

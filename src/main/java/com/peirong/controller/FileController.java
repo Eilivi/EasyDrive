@@ -10,21 +10,23 @@ import com.peirong.service.FileService;
 import com.peirong.service.RecycleService;
 import com.peirong.service.ResponseService;
 import com.peirong.service.ShareService;
+import com.peirong.util.FileDistinctHash;
 import com.peirong.util.UUIDUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.security.provider.MD5;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -47,6 +49,8 @@ public class FileController {
     private RecycleService recycleService;
     @Resource
     private ShareService shareService;
+    @Resource
+    private FileDistinctHash fileDistinctHash;
 
     @PostMapping("search")
     public Map<String, Object> search(@RequestBody Map<String, String> map) {
@@ -117,6 +121,28 @@ public class FileController {
             Files files = fileService.getOne(queryWrapper);
             response.setContentType("application/octet-stream");
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(files.getFilename().getBytes(), StandardCharsets.ISO_8859_1));
+            byte[] bytes = new byte[256 * 1024];
+            int readCount = 0;
+            while ((readCount = inputStream.read(bytes)) != -1) {
+                response.getOutputStream().write(bytes, 0, readCount);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        response.getOutputStream().flush();
+    }
+
+    @GetMapping("show")
+    public void downloadRecycle(String path, HttpServletResponse response) throws IOException {
+        File file = new File(path);
+        System.out.println(path);
+        try {
+            FileInputStream inputStream = new FileInputStream(file);
+            QueryWrapper<Recycle> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("filepath", path);
+            Recycle recycle = recycleService.getOne(queryWrapper);
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(recycle.getFilename().getBytes(), StandardCharsets.ISO_8859_1));
             byte[] bytes = new byte[256 * 1024];
             int readCount = 0;
             while ((readCount = inputStream.read(bytes)) != -1) {
@@ -261,20 +287,32 @@ public class FileController {
     }
 
     @GetMapping("scan")
-    public List<Files> scan(String id) {
+    public List<Files> scan(String id) throws IOException, NoSuchAlgorithmException {
         QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("uid", id);
         List<Files> filesList = fileService.list(queryWrapper);
+        Map<String, List<Files>> map = new HashMap<>();
 
-        FileUtils fileUtils = new FileUtils();
 
         for (Files files : filesList) {
             File file = new File(files.getFilepath());
-
+            String fileContent = fileDistinctHash.getFileContent(file);
+            String hash = fileDistinctHash.getHash(fileContent);
+            if (map.containsKey(hash)) {
+                map.get(hash).add(files);
+            } else if(!files.getFilepath().equals("is_a_folder")) {
+                List<Files> list = new ArrayList<>();
+                list.add(files);
+                map.put(hash, list);
+            }
         }
 
-        return new ArrayList<>();
-        //return fileService.list(queryWrapper);
+        map.entrySet().removeIf(entry -> entry.getValue().size() == 1);
+        List<Files> list = new ArrayList<>();
+        for (String key : map.keySet()) {
+            list.addAll(map.get(key));
+        }
+        return list;
     }
 
     @GetMapping("share")
@@ -330,7 +368,6 @@ public class FileController {
         }
         response.getOutputStream().flush();
         return "success";
-
     }
 
     @GetMapping("recycle")
@@ -353,7 +390,6 @@ public class FileController {
             files.setFilename(recycle.getFilename());
             files.setFilesize(recycle.getFilesize());
             files.setFilepath(uploadPath + recycle.getFilepath().substring(recycle.getFilepath().lastIndexOf("/") + 1));
-            //回收站的文件统一放回根路径
             files.setFolder("/");
             if (fileService.save(files)) {
                 file.renameTo(new File(uploadPath + file.getName()));
@@ -361,5 +397,19 @@ public class FileController {
             }
         }
         return false;
+    }
+
+    @GetMapping("video")
+    public List<Files> video(String id) {
+        QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("uid", id);
+        List<Files> filesList = fileService.list(queryWrapper);
+        List<Files> list = new ArrayList<>();
+        for (Files files : filesList) {
+            if (files.getFilename().substring(files.getFilename().lastIndexOf(".") + 1).equals("mp4")) {
+                list.add(files);
+            }
+        }
+        return list;
     }
 }

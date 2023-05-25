@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 
 @Configuration
-public class SendEmailAndMessage {
+public class SendEmailMessage {
 
     @Resource
     private SendEmailUtil sendEmailUtil;
@@ -25,8 +25,9 @@ public class SendEmailAndMessage {
 
 
     public void sendMessage(String account) throws Exception {
-        Integer codeSendToUser = ValidateCode.generateValidateCode(6);
-        String code = String.valueOf(codeSendToUser);
+
+        String code = String.format("%06d", new Random().nextInt(100000));
+
         System.out.println(code);
         OkHttpClient client = new OkHttpClient();
         Request postRequest = new Request.Builder().url(sendSmsUtil.postURL(account, code)).get().build();
@@ -48,7 +49,6 @@ public class SendEmailAndMessage {
         System.out.println(code);
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(60);
-        //System.out.println(account);
         try {
             executorService.execute(() -> sendEmailUtil.sendEmail(account, code));
             session.setAttribute("email-code-" + account, code);

@@ -17,7 +17,6 @@ import java.sql.Date;
 @ToString(callSuper = true)
 @TableName("user")
 public class Account implements Serializable {
-    //@TableId(type = IdType.AUTO)
     @Id
     private Long id;
     private String username;

@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author Peirong
@@ -25,19 +24,13 @@ public class BeforeLogin {
     @Resource
     private UserService userService;
     @Resource
-    private SendEmailUtil sendEmailUtil;
-    @Resource
-    private SendSmsUtil sendSmsUtil;
-    @Resource
     private HttpServletRequest request;
-    @Resource
-    private ExecutorService executorService;
     @Resource
     private BCryptPasswordEncoder encoder;
     final static String PHONE_REGEX = "^1\\d{10}$";
     final static String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
     @Resource
-    private SendEmailAndMessage send;
+    private SendEmailMessage send;
 
     @PostMapping("SendMessageToRegister")
     public RestResponse<String> sendMessage(@RequestBody Map<String, String> map) throws Exception {
