@@ -20,8 +20,7 @@ public class SendEmailUtil {
 
     @Resource
     private JavaMailSender javaMailSender;
-    @Value("${spring.mail.username}")
-    private String sendFrom;
+    private String sendFrom = "ezdrive@qq.com";
 
     public void checkMail(Email mailRequest) {
         Assert.notNull(mailRequest, "邮件请求不能为空");

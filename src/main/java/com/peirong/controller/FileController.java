@@ -6,26 +6,21 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.peirong.entity.*;
 import com.peirong.mapper.FileMapper;
-import com.peirong.service.FileService;
-import com.peirong.service.RecycleService;
+import com.peirong.mapper.RecycleMapper;
+import com.peirong.mapper.ShareMapper;
 import com.peirong.service.ResponseService;
-import com.peirong.service.ShareService;
 import com.peirong.util.FileDistinctHash;
 import com.peirong.util.UUIDUtils;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sun.security.provider.MD5;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,8 +30,7 @@ import java.util.*;
 @RequestMapping("file")
 public class FileController {
 
-    @Resource
-    private FileService fileService;
+
     @Value("${uploadPath}")
     private String uploadPath;
     @Resource
@@ -44,11 +38,11 @@ public class FileController {
     @Resource
     private FileMapper fileMapper;
     @Resource
+    private RecycleMapper recycleMapper;
+    @Resource
+    private ShareMapper shareMapper;
+    @Resource
     private RedisTemplate redisTemplate;
-    @Resource
-    private RecycleService recycleService;
-    @Resource
-    private ShareService shareService;
     @Resource
     private FileDistinctHash fileDistinctHash;
 
@@ -67,7 +61,9 @@ public class FileController {
         long pageSize = Long.parseLong(map.get("pageSize"));
         Page<Files> page = new Page<>(currentPage, pageSize);
 
-        fileService.page(page, queryWrapper);
+        //fileService.page(page, queryWrapper);
+        fileMapper.selectPage(page, queryWrapper);
+
         Map<String, Object> map2 = new HashMap<>();
         map2.put("total", page.getTotal());
         map2.put("data", page.getRecords());
@@ -96,7 +92,8 @@ public class FileController {
         System.out.println(path);
         files.setFolder(path);
         Map<String, Object> map = new HashMap<>();
-        if (fileService.save(files)) {
+
+        if (fileMapper.insert(files) > 0) {
             file.transferTo(new File(uploadPath + name));
             map.put(ResponseService.CODE, 200);
             map.put(ResponseService.SUCCESS, true);
@@ -118,7 +115,9 @@ public class FileController {
             FileInputStream inputStream = new FileInputStream(file);
             QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("filepath", path);
-            Files files = fileService.getOne(queryWrapper);
+
+            //Files files = fileService.getOne(queryWrapper);
+            Files files = fileMapper.selectOne(queryWrapper);
             response.setContentType("application/octet-stream");
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(files.getFilename().getBytes(), StandardCharsets.ISO_8859_1));
             byte[] bytes = new byte[256 * 1024];
@@ -140,7 +139,7 @@ public class FileController {
             FileInputStream inputStream = new FileInputStream(file);
             QueryWrapper<Recycle> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("filepath", path);
-            Recycle recycle = recycleService.getOne(queryWrapper);
+            Recycle recycle = recycleMapper.selectOne(queryWrapper);
             response.setContentType("application/octet-stream");
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(recycle.getFilename().getBytes(), StandardCharsets.ISO_8859_1));
             byte[] bytes = new byte[256 * 1024];
@@ -158,13 +157,14 @@ public class FileController {
     public boolean delete(String id, HttpServletResponse response) {
         QueryWrapper<Recycle> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        Recycle recycle = recycleService.getOne(queryWrapper);
+        Recycle recycle = recycleMapper.selectOne(queryWrapper);
         String path = recycle.getFilepath();
         File file = new File(path);
         try {
             if (file.exists()) {
                 file.delete();
-                return recycleService.remove(queryWrapper);
+                recycleMapper.delete(queryWrapper);
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,7 +177,8 @@ public class FileController {
         String waitToDelete = "/Users/peirong/recycle/";
         QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        Files files = fileService.getOne(queryWrapper);
+        Files files = fileMapper.selectOne(queryWrapper);
+        //Files files = fileService.getOne(queryWrapper);
         String path = files.getFilepath();
         File file = new File(path);
         Recycle recycle = new Recycle();
@@ -190,12 +191,15 @@ public class FileController {
                 recycle.setFilepath(waitToDelete + files.getFilepath().substring(files.getFilepath().lastIndexOf("/") + 1));
                 recycle.setFolder(files.getFolder());
                 file.renameTo(new File(waitToDelete + file.getName()));
-                fileService.remove(queryWrapper);
-                return recycleService.save(recycle);
+                fileMapper.delete(queryWrapper);
+                //fileService.remove(queryWrapper);
+                recycleMapper.insert(recycle);
+                return true;
             } else if (path.equals("is_a_folder")) {
                 QueryWrapper<Files> queryWrapper1 = new QueryWrapper<>();
                 queryWrapper1.eq("folder", files.getFolder() + files.getFilename()).eq("uid", files.getUid());
-                List<Files> filesList = fileService.list(queryWrapper1);
+                //List<Files> filesList = fileService.list(queryWrapper1);
+                List<Files> filesList = fileMapper.selectList(queryWrapper1);
                 if (filesList.size() != 0) {
                     for (Files files1 : filesList) {
                         File file1 = new File(files1.getFilepath());
@@ -205,12 +209,16 @@ public class FileController {
                         recycle.setFilesize(files1.getFilesize());
                         recycle.setFilepath(waitToDelete + files1.getFilepath().substring(files1.getFilepath().lastIndexOf("/") + 1));
                         recycle.setFolder("/");
-                        recycleService.save(recycle);
+                        recycleMapper.insert(recycle);
                         file1.renameTo(new File(waitToDelete + file1.getName()));
                     }
-                    fileService.remove(queryWrapper1);
+                    fileMapper.delete(queryWrapper1);
+                    //fileService.remove(queryWrapper1);
                 }
-                return fileService.remove(queryWrapper);
+                if (fileMapper.delete(queryWrapper) == 1) {
+                    return true;
+                }
+                //return fileMapper.delete(queryWrapper);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -224,7 +232,8 @@ public class FileController {
         String filename = map.get("filename");
         QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        Files files = fileService.getOne(queryWrapper);
+        Files files = fileMapper.selectOne(queryWrapper);
+        //Files files = fileService.getOne(queryWrapper);
         String oldFilename = files.getFilename();
         String path = files.getFilepath();
         if (path.equals("is_a_folder")) {
@@ -234,7 +243,8 @@ public class FileController {
             int suffixIndex = suffix.length - 1;
             files.setFilename(filename + "." + suffix[suffixIndex]);
         }
-        if (fileService.updateById(files)) {
+        //if (fileService.updateById(files)) {
+        if (fileMapper.updateById(files) == 1) {
             return RestResponse.success("重命名成功");
         } else
             return RestResponse.failure(401, "重命名失败");
@@ -249,7 +259,8 @@ public class FileController {
             files.setUid(account.getId());
             files.setFilename(map.get("filename") + "/");
             files.setFolder(map.get("path"));
-            fileService.save(files);
+            fileMapper.insert(files);
+            //fileService.save(files);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,7 +301,8 @@ public class FileController {
     public List<Files> scan(String id) throws IOException, NoSuchAlgorithmException {
         QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("uid", id);
-        List<Files> filesList = fileService.list(queryWrapper);
+        //List<Files> filesList = fileService.list(queryWrapper);
+        List<Files> filesList = fileMapper.selectList(queryWrapper);
         Map<String, List<Files>> map = new HashMap<>();
 
 
@@ -319,7 +331,8 @@ public class FileController {
     public String share(String id) {
         QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        Files files = fileService.getOne(queryWrapper);
+        //Files files = fileService.getOne(queryWrapper);
+        Files files = fileMapper.selectOne(queryWrapper);
         Share share = new Share();
         try {
             share.setUid(files.getUid());
@@ -330,7 +343,7 @@ public class FileController {
             share.setFileId(files.getId());
             String shareId = UUID.randomUUID().toString().replace("-", "");
             share.setId(shareId);
-            shareService.save(share);
+            shareMapper.insert(share);
             return shareId;
         } catch (Exception e) {
             e.printStackTrace();
@@ -342,17 +355,18 @@ public class FileController {
     public String getShare(String id, HttpServletResponse response) throws ParseException, IOException {
         QueryWrapper<Share> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        Share share = shareService.getOne(queryWrapper);
+        Share share = shareMapper.selectOne(queryWrapper);
         if (share == null) {
             return "error";
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (sdf.parse(share.getExpireTime()).compareTo(new Date()) < 0) {
-            shareService.remove(queryWrapper);
+            shareMapper.delete(queryWrapper);
             return "error";
         }
         try {
-            Files files = fileService.getById(share.getFileId());
+            //Files files = fileService.getById(share.getFileId());
+            Files files = fileMapper.selectById(share.getFileId());
             File file = new File(files.getFilepath());
             FileInputStream inputStream = new FileInputStream(file);
             response.setContentType("application/octet-stream");
@@ -374,14 +388,14 @@ public class FileController {
     public List<Recycle> recycle(String id) {
         QueryWrapper<Recycle> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("uid", id);
-        return recycleService.list(queryWrapper);
+        return recycleMapper.selectList(queryWrapper);
     }
 
     @GetMapping("restore")
     public boolean restore(String id) {
         QueryWrapper<Recycle> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        Recycle recycle = recycleService.getOne(queryWrapper);
+        Recycle recycle = recycleMapper.selectOne(queryWrapper);
         Files files = new Files();
         File file = new File(recycle.getFilepath());
         if (file.exists()) {
@@ -391,9 +405,10 @@ public class FileController {
             files.setFilesize(recycle.getFilesize());
             files.setFilepath(uploadPath + recycle.getFilepath().substring(recycle.getFilepath().lastIndexOf("/") + 1));
             files.setFolder("/");
-            if (fileService.save(files)) {
+            if (fileMapper.insert(files) == 1) {
                 file.renameTo(new File(uploadPath + file.getName()));
-                return recycleService.remove(queryWrapper);
+                recycleMapper.delete(queryWrapper);
+                return true;
             }
         }
         return false;
@@ -403,7 +418,8 @@ public class FileController {
     public List<Files> video(String id) {
         QueryWrapper<Files> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("uid", id);
-        List<Files> filesList = fileService.list(queryWrapper);
+        List<Files> filesList = fileMapper.selectList(queryWrapper);
+        //List<Files> filesList = fileService.list(queryWrapper);
         List<Files> list = new ArrayList<>();
         for (Files files : filesList) {
             if (files.getFilename().substring(files.getFilename().lastIndexOf(".") + 1).equals("mp4")) {

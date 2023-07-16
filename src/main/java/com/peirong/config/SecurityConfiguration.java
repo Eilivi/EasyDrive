@@ -45,8 +45,7 @@ public class SecurityConfiguration {
     @Resource
     private RedisTemplate redisTemplate;
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
-                                           PersistentTokenRepository repository) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, PersistentTokenRepository repository) throws Exception {
         return http
                 .authorizeHttpRequests()
                 .antMatchers("/before/**","/file/**","/check/**","/after/**").permitAll()

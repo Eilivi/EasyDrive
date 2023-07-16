@@ -1,6 +1,5 @@
 package com.peirong.util;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -16,10 +15,8 @@ import javax.xml.bind.DatatypeConverter;
 @Component
 public class SendSmsUtil {
     private final static String CHARSET = "UTF-8";
-    @Value("${SECRET_ID}")
-    private String SECRET_ID;
-    @Value("${SECRET_KEY}")
-    private String SECRET_KEY;
+    private String SECRET_ID = "AKIDPfjZYJtITQ8fy4zgAQRDkIchXAZkfMo4";
+    private String SECRET_KEY = "5xrWzFH6K1Yr21qSt7A0d4JLAqKcgXDg";
 
     public String sign(String s, String key, String method) throws Exception {
         Mac mac = Mac.getInstance(method);
